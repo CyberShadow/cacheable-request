@@ -587,6 +587,19 @@ test('checks status codes when comparing cache & response', async t => {
 	t.is(secondResponse.body, 'ok');
 });
 
+test('304 responses with forceRefresh do not clobber cache', async t => {
+	const endpoint = '/etag';
+	const cache = new Map();
+	const cacheableRequest = new CacheableRequest(request, cache);
+	const cacheableRequestHelper = promisify(cacheableRequest);
+	const opts = url.parse(s.url + endpoint);
+
+	const firstResponse = await cacheableRequestHelper(opts);
+	const secondResponse = await cacheableRequestHelper({ ...opts, forceRefresh: true });
+	t.is(firstResponse.body, 'etag');
+	t.is(secondResponse.body, 'etag');
+});
+
 test.after('cleanup', async () => {
 	await s.close();
 });

@@ -81,7 +81,7 @@ class CacheableRequest {
 				});
 
 				const handler = response => {
-					if (revalidate && !opts.forceRefresh) {
+					if (revalidate) {
 						response.status = response.statusCode;
 						const revalidatedPolicy = CachePolicy.fromObject(revalidate.cachePolicy).revalidatedPolicy(opts, response);
 						if (!revalidatedPolicy.modified) {
